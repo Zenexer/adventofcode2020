@@ -11,13 +11,6 @@ impl Row {
 	fn tree_val(&self, n: usize) -> usize {
 		(self.trees >> (n % self.size)) as usize & 1
 	}
-
-	// Might need this later; not sure yet.  Delete if not needed.
-	/*
-	fn is_tree(&self, n: usize) -> bool {
-		self.tree_val(n) == 1
-	}
-	*/
 }
 
 impl FromStr for Row {
