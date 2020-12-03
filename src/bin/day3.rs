@@ -59,14 +59,14 @@ solve_day! {
 
 		fn part2(&self, input: &[Row]) -> Solution<usize> {
 			Solution::Ok(
-				vec![
+				[
 					(1, 1),
 					(3, 1),
 					(5, 1),
 					(7, 1),
 					(1, 2),
 				]
-					.into_iter()
+					.iter()
 					.map(|x| self.count_trees(input, x.1, x.0))
 					.product()
 			)
