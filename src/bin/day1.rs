@@ -3,6 +3,19 @@ use aoc_2020::{solve_day, Solution};
 const MAX: usize = 2020;
 
 solve_day! {
+	tests {
+		input = "
+			1721
+			979
+			366
+			299
+			675
+			1456
+		";
+		part1 = "514579";
+		part2 = "241861950";
+	}
+
 	Day1<usize, usize>(1) {
 		fn check_input(&self, input: &[usize]) {
 			self.assert_max(input, MAX);

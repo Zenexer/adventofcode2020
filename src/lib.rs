@@ -7,6 +7,11 @@ use std::str::FromStr;
 #[macro_export]
 macro_rules! solve_day {
 	{
+		tests {
+			input = $test_input:literal;
+			$($test_part:ident = $test_output:literal);* $(;)?
+		}
+
 		$name:ident<$input:ty, $output:ty>($day:literal) {
 			$($fn:tt)*
 		}
@@ -23,6 +28,32 @@ macro_rules! solve_day {
 			}
 			
 			$($fn)*
+		}
+
+		#[cfg(test)]
+		mod test {
+			use super::*;
+
+			$(
+				#[test]
+				fn $test_part() {
+					let x = $name();
+
+					let raw_indented: &str = $test_input;
+					let raw: &str = &raw_indented
+						.trim()
+						.lines()
+						.map(str::trim)
+						.collect::<Vec<&str>>()
+						.join("\n");
+
+					let input: &[$input] = &$crate::Day::parse(&x, raw);
+					$crate::Day::check_input(&x, input);
+					let solution = $crate::Day::$test_part(&x, input);
+					let output = format!("{}", solution);
+					assert_eq!(output, $test_output);
+				}
+			)*
 		}
 	}
 }
@@ -75,8 +106,7 @@ pub trait Day<Input: FromStr, Output: Display> {
 	fn run(&self) {
 		let day = self.day();
 		let raw = get_raw_input(day);
-		let input: &[Input] = &self.parse(&raw);
-
+		let input = &self.parse(&raw);
 		self.check_input(input);
 
 		for part in 1..3 {
