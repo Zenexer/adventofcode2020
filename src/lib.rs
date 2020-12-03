@@ -24,13 +24,38 @@ macro_rules! solve_day {
 			
 			$($fn)*
 		}
-	};
+	}
+}
+
+pub enum Solution<T: Display> {
+	NotImplemented,
+	Failed,
+	Ok(T),
+}
+
+impl<T: Display> Display for Solution<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		match self {
+			Solution::NotImplemented => write!(f, "(not implemented)"),
+			Solution::Failed => write!(f, "(FAILED!)"),
+			Solution::Ok(x) => x.fmt(f),
+		}
+    }
 }
 
 pub trait Day<Input: FromStr, Output: Display> {
 	fn day(&self) -> u8;
-	fn part1(&self, input: &[Input]) -> Output;
-	fn part2(&self, _input: &[Input]) -> Option<Output> { None }
+	fn part1(&self, input: &[Input]) -> Solution<Output>;
+	fn part2(&self, _input: &[Input]) -> Solution<Output> { Solution::NotImplemented }
+
+	fn check_input(&self, _input: &[Input]) { }
+
+	fn assert_max(&self, input: &[Input], max: Input)
+	where
+		Input: Ord + Display
+	{
+		assert!(input.iter().all(|x| *x <= max), format!("It doesn't make sense for any item to be greater than {}", max));
+	}
 
 	fn parse(&self, raw: &str) -> Vec<Input> {
 		raw
@@ -39,15 +64,24 @@ pub trait Day<Input: FromStr, Output: Display> {
 			.collect()
 	}
 
+	fn part(&self, part: u8, input: &[Input]) -> Solution<Output> {
+		match part {
+			1 => self.part1(input),
+			2 => self.part2(input),
+			_ => panic!("Logic error"),
+		}
+	}
+
 	fn run(&self) {
 		let day = self.day();
 		let raw = get_raw_input(day);
 		let input: &[Input] = &self.parse(&raw);
 
-		println!("Day {}, part 1: {}", day, self.part1(input));
+		self.check_input(input);
 
-		if let Some(part2) = self.part2(input) {
-			println!("Day {}, part 2: {}", day, part2);
+		for part in 1..3 {
+			let solution = self.part(part, input);
+			println!("Day {}, Part {}: {}", day, part, solution);
 		}
 	}
 }

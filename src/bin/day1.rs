@@ -1,23 +1,51 @@
-use aoc_2020::solve_day;
+use aoc_2020::{solve_day, Solution};
+
+const MAX: usize = 2020;
 
 solve_day! {
 	Day1<usize, usize>(1) {
-		fn part1(&self, input: &[usize]) -> usize {
-			assert!(*input.iter().max().unwrap() <= 2020, "It doesn't make sense for any item to be greater than 2020");
+		fn check_input(&self, input: &[usize]) {
+			self.assert_max(input, MAX);
+		}
 
-			let mut keyed = [false; 2020];
+		fn part1(&self, input: &[usize]) -> Solution<usize> {
+			let mut keyed = [false; MAX];
 
 			for &n in input {
-				let complement = 2020 - n;
+				let complement = MAX - n;
 
 				if keyed[complement] {
-					return complement * n;
+					return Solution::Ok(complement * n);
 				}
 
 				keyed[n] = true;
 			}
 
-			panic!("Failed to find solution")
+			Solution::Failed
+		}
+
+		fn part2(&self, input: &[usize]) -> Solution<usize> {
+			let mut keyed = [false; MAX];
+
+			for &n in input {
+				keyed[n] = true;
+			}
+
+			for &x in input {
+				let max = MAX - x;
+
+				for &y in input {
+					if y < max {
+						let z = MAX - x - y;
+
+						if keyed[z] {
+							return Solution::Ok(x * y * z);
+						}
+					}
+				}
+			}
+
+			Solution::Failed
 		}
 	}
 }
