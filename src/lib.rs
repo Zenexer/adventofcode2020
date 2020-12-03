@@ -1,6 +1,6 @@
 use reqwest::{Url, header};
 use reqwest::header::{HeaderMap, HeaderValue};
-use std::fmt::Display;
+use std::{fmt::Display, error::Error};
 use std::fs;
 use std::str::FromStr;
 
@@ -56,6 +56,17 @@ macro_rules! solve_day {
 			)*
 		}
 	}
+}
+
+#[derive(Debug)]
+pub struct InvalidInputError();
+
+impl Error for InvalidInputError {}
+
+impl Display for InvalidInputError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Invalid input")
+    }
 }
 
 pub enum Solution<T: Display> {
