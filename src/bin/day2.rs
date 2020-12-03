@@ -32,10 +32,10 @@ impl PasswordEntry {
 	}
 
     fn is_valid2(&self) -> bool {
-		[self.min, self.max].iter().all(|&i| match self.password.chars().nth(i - 1) {
-			Some(c) => c == self.letter,
-			None => false,
-		})
+		let a = self.password.chars().nth(self.min - 1).unwrap_or_default() == self.letter;
+		let b = self.password.chars().nth(self.max - 1).unwrap_or_default() == self.letter;
+
+		a ^ b
     }
 }
 
