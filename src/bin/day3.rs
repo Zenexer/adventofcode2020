@@ -56,15 +56,38 @@ solve_day! {
 			.#..#...#.#
 		";
 		part1 = "7";
+		part2 = "336";
 	}
 
 	Day3<Row, usize>(3) {
 		fn part1(&self, input: &[Row]) -> Solution<usize> {
-			Solution::Ok(input
+			Solution::Ok(self.count_trees(input, 1, 3))
+		}
+
+		fn part2(&self, input: &[Row]) -> Solution<usize> {
+			Solution::Ok(
+				vec![
+					(1, 1),
+					(3, 1),
+					(5, 1),
+					(7, 1),
+					(1, 2),
+				]
+					.into_iter()
+					.map(|x| self.count_trees(input, x.1, x.0))
+					.product()
+			)
+		}
+	}
+
+	impl {
+		fn count_trees(&self, input: &[Row], numerator: usize, denominator: usize) -> usize {
+			input
 				.iter()
+				.step_by(numerator)
 				.enumerate()
-				.map(|x| x.1.tree_val(x.0 * 3))
-				.sum())
+				.map(|x| x.1.tree_val(x.0 * denominator))
+				.sum()
 		}
 	}
 }

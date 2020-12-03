@@ -15,6 +15,12 @@ macro_rules! solve_day {
 		$name:ident<$input:ty, $output:ty>($day:literal) {
 			$($fn:tt)*
 		}
+
+		$(
+			impl {
+				$($impl:tt)*
+			}
+		)?
 	} => {
 		struct $name();
 
@@ -29,6 +35,12 @@ macro_rules! solve_day {
 			
 			$($fn)*
 		}
+
+		$(
+			impl $name {
+				$($impl)*
+			}
+		)?
 
 		#[cfg(test)]
 		mod test {
