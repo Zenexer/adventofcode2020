@@ -111,9 +111,13 @@ pub trait Day<Input: FromStr, Output: Display> {
 		assert!(input.iter().all(|x| *x <= max), format!("It doesn't make sense for any item to be greater than {}", max));
 	}
 
+	fn split<'f>(&self, raw: &'f str) -> Vec<&'f str> {
+		raw.lines().collect()
+	}
+
 	fn parse(&self, raw: &str) -> Vec<Input> {
-		raw
-			.lines()
+		self.split(raw)
+			.into_iter()
 			.map(|x| x.parse::<Input>().ok().expect(&format!("Failed to parse line: {}", x)))
 			.collect()
 	}
